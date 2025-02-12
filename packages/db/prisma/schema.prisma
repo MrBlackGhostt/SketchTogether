@@ -19,7 +19,71 @@ model User {
   password String
   email String
   rooms RoomUser[]
+  ownedRooms Room[] @relation("RoomOwner")
   messages Chat[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  session Session[]
+}
+model Room {
+  id String @id @default(uuid())
+  name String
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id], name: "RoomOwner")
+  elements Element[]
+  message Chat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  session Session[]
+
+  roomUser RoomUser[]
+}
+
+model RoomUser {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  roomId String
+  room Room @relation(fields: [roomId], references: [id])
+  joinedAt DateTime @default(now())
+  @@unique([userId, roomId])
+}
+
+model Element {
+id String @id @default(uuid())
+type String
+x Float
+y Float
+width Float?
+height Float?
+roomId String
+//  color String? 
+//   strokeWidth Float? 
+//   rotation Float?
+room Room @relation(fields: [roomId], references: [id])
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+}
+
+model Chat {
+  id String @id @default(uuid())
+  message String
+  roomId String
+  room Room @relation(fields: [roomId], references: [id])
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  roomId String
+  room Room @relation(fields: [roomId], references: [id])
+  connected Boolean @default(true)
+  joinedAt DateTime @default(now())
+  disconnectedAt DateTime?
 }
