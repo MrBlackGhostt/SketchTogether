@@ -8,6 +8,7 @@ export function authMiddleware(
   next: NextFunction
 ) {
   const token = req.headers.authorization?.split(" ")[1];
+  console.log(token);
   if (!token) {
     res.status(401).json({
       error: "Unauthorized",
@@ -16,7 +17,9 @@ export function authMiddleware(
   }
   try {
     const decoded = verifyToken(token!);
-    req.user = { id: decoded as string };
+    console.log("🚀 ~ decoded:", decoded);
+
+    req.user = decoded;
     next();
   } catch (err) {
     res.status(403).json({ error: "Invalid token" });

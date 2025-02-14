@@ -1,9 +1,22 @@
 import jwt from "jsonwebtoken";
 
-export function generateToken(userId: string) {
-  return jwt.sign({ userId }, process.env.SECRET_KEY || "adbajbdnajbdjadjnb");
+export function generateToken(id: string) {
+  return jwt.sign({ id }, process.env.SECRET_KEY || "adbajbdnajbdjadjnb", {
+    noTimestamp: true,
+  });
 }
 
-export function verifyToken(token: string) {
-  return jwt.verify(token, process.env.SECRET_KEY || "adbajbdnajbdjadjnb");
+export function verifyToken(token: string): string {
+  const decoded = jwt.verify(
+    token,
+    process.env.SECRET_KEY || "adbajbdnajbdjadjnb"
+  ) as jwt.JwtPayload;
+
+  console.log("🚀 ~ verifyToken ~ decoded:", decoded);
+
+  if (!decoded || typeof decoded !== "object" || !decoded.id) {
+    throw new Error("Invalid token");
+  }
+
+  return decoded.id; //
 }

@@ -37,7 +37,7 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.post("/signin", async (req: AuthRequest, res: Response) => {
   const { email, password } = req.body;
-  console.log("Password", password);
+
   try {
     const user = await client.user.findFirst({
       where: { email: email },
@@ -61,8 +61,6 @@ app.post("/signin", async (req: AuthRequest, res: Response) => {
 
     res.status(200).send({
       token,
-      name: user.name,
-      email: user.email,
     });
   } catch (error) {
     res.status(500).send({ message: "Something went wrong with the database" });
@@ -75,19 +73,25 @@ app.post(
   async (req: AuthRequest, res: Response, next) => {
     try {
       const { name } = req.body;
+      console.log("🚀 ~ name:", name);
+      console.log("🚀 ~ user:", req.user);
+      const id = req.user;
       if (!name) {
         res.status(400).json({ error: "Room name is required" });
         return;
       }
       const newRoom = await client.room.create({
         data: {
-          name,
-          ownerId: req.user?.id!,
+          name: name,
+          ownerId: id as string,
         },
       });
+
+      console.log("🚀 ~ newRoom:", newRoom);
       res.status(201).json(newRoom);
-    } catch (error) {
-      res.status(500).json({ error: "Error creating room" });
+    } catch (error: any) {
+      console.log("🚀 ~ error:", error);
+      res.status(500).json({ error: error.message || "Error creating room" });
     }
   }
 );
