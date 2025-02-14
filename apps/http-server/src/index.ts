@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import { client } from "@repo/db/client";
-import { generateToken } from "@repo/auth/token";
+
 import bcrypt from "bcrypt";
 import { authMiddleware } from "./middleware/auth";
 
 import { AuthRequest } from "./types";
+import { generateToken } from "@repo/auth/token";
 
 async function generateHash(params: string) {
   const saltRound = 10;
@@ -63,7 +64,10 @@ app.post("/signin", async (req: AuthRequest, res: Response) => {
       token,
     });
   } catch (error) {
-    res.status(500).send({ message: "Something went wrong with the database" });
+    res.status(500).json({
+      message: "Something went wrong with the database",
+      error: error,
+    });
   }
 });
 
@@ -73,8 +77,6 @@ app.post(
   async (req: AuthRequest, res: Response, next) => {
     try {
       const { name } = req.body;
-      console.log("🚀 ~ name:", name);
-      console.log("🚀 ~ user:", req.user);
       const id = req.user;
       if (!name) {
         res.status(400).json({ error: "Room name is required" });
@@ -86,13 +88,45 @@ app.post(
           ownerId: id as string,
         },
       });
-
-      console.log("🚀 ~ newRoom:", newRoom);
       res.status(201).json(newRoom);
     } catch (error: any) {
-      console.log("🚀 ~ error:", error);
       res.status(500).json({ error: error.message || "Error creating room" });
     }
+  }
+);
+
+// Req to Join a room
+
+app.post(
+  "/joinroom",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next) => {
+    const { roomName } = req.body;
+
+    try {
+      const room = await client.room.findFirst({
+        where: {
+          name: roomName,
+        },
+      });
+      const userId = req.user;
+      if (!room) {
+        res.status(401).json({
+          error: "No Room available for this id",
+        });
+        return;
+      }
+      await client.roomUser.create({
+        data: {
+          roomId: room.id,
+          userId: userId!,
+        },
+      });
+      res.status(200).json({
+        messae: "Join the room Successfull",
+        roomId: room.id,
+      });
+    } catch (error) {}
   }
 );
 

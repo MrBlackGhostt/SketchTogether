@@ -17,8 +17,6 @@ export function authMiddleware(
   }
   try {
     const decoded = verifyToken(token!);
-    console.log("🚀 ~ decoded:", decoded);
-
     req.user = decoded;
     next();
   } catch (err) {
