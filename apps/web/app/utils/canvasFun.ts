@@ -1,5 +1,14 @@
 import { Dispatch, SetStateAction } from "react";
 
+type Item = {
+  type: "rectangle" | "circle";
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  radius?: number;
+};
+
 export const handleWheel = (
   event: React.WheelEvent<HTMLCanvasElement>,
   current: HTMLCanvasElement | null,
@@ -26,38 +35,55 @@ export const handleWheel = (
 
 export const handleMouseDown = (
   event: React.MouseEvent<HTMLCanvasElement>,
-  setIsPanning: Dispatch<SetStateAction<boolean>>,
+  setIsDrawing: Dispatch<SetStateAction<boolean>>,
   setStartX: Dispatch<SetStateAction<number>>,
   setStartY: Dispatch<SetStateAction<number>>,
   translateX: number,
   translateY: number
 ) => {
-  setIsPanning(true);
+  setIsDrawing(true);
   setStartX(event.clientX - translateX);
   setStartY(event.clientY - translateY);
 };
 
 export const handleMouseMove = (
   event: React.MouseEvent<HTMLCanvasElement>,
-  isPanning: boolean,
+  isDrawing: boolean,
   startX: number,
   startY: number,
   setTranslateX: Dispatch<SetStateAction<number>>,
   setTranslateY: Dispatch<SetStateAction<number>>
 ) => {
-  if (!isPanning) return;
+  if (!isDrawing) return;
   setTranslateX(event.clientX - startX);
   setTranslateY(event.clientY - startY);
 };
 
 export const handleMouseUp = (
-  setIsPanning: Dispatch<SetStateAction<boolean>>
+  setItems: Dispatch<SetStateAction<Item[]>>,
+  addItem: "rectangle" | "circle",
+  startX: number,
+  startY: number,
+  translateX: number,
+  translateY: number,
+  setIsDrawing: Dispatch<SetStateAction<boolean>>
 ) => {
-  setIsPanning(false);
+  setItems((prev) => [
+    ...prev,
+    {
+      type: addItem,
+      x: startX,
+      y: startY,
+      width: translateX,
+      height: translateY,
+    },
+  ]);
+
+  setIsDrawing(false);
 };
 
 export const handleMouseLeave = (
-  setIsPanning: Dispatch<SetStateAction<boolean>>
+  setIsDrawing: Dispatch<SetStateAction<boolean>>
 ) => {
-  setIsPanning(false);
+  setIsDrawing(false);
 };

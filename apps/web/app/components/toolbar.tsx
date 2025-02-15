@@ -1,16 +1,16 @@
 "use client";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 interface propsToolBar {
-  addItem: (x: "rectangle" | "circle") => void;
+  setAddItem: Dispatch<SetStateAction<"rectangle" | "circle">>;
 }
 
-const Toolbar = ({ addItem }: propsToolBar) => {
+const Toolbar = ({ setAddItem }: propsToolBar) => {
   return (
     <div className="relative top-4 left-10 bg-white p-4 rounded shadow z-10">
       <div className="gap-4 flex flex-row">
-        <button onClick={() => addItem("rectangle")}>Add Rectangle</button>
-        <button onClick={() => addItem("circle")}>Add Circle</button>
+        <button onClick={() => setAddItem("rectangle")}>Add Rectangle</button>
+        <button onClick={() => setAddItem("circle")}>Add Circle</button>
       </div>
     </div>
   );

@@ -11,9 +11,6 @@ export function verifyToken(token: string): string {
     token,
     process.env.SECRET_KEY || "adbajbdnajbdjadjnb"
   ) as jwt.JwtPayload;
-
-  console.log("🚀 ~ verifyToken ~ decoded:", decoded);
-
   if (!decoded || typeof decoded !== "object" || !decoded.id) {
     throw new Error("Invalid token");
   }
