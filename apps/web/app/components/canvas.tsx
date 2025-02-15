@@ -8,23 +8,25 @@ import {
   handleMouseUp,
   handleWheel,
 } from "../utils/canvasFun";
-import { boolean } from "zod";
+import Join from "./join";
+import { Button } from "@repo/ui/button";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [scale, setScale] = useState(1);
   const [translateX, setTranslateX] = useState(0);
-  console.log("🚀 ~ InfiniteCanvas ~ translateX:", translateX);
   const [translateY, setTranslateY] = useState(0);
-  console.log("🚀 ~ InfiniteCanvas ~ translateY:", translateY);
-  // const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [isDrawing, setIsDrawing] = useState(false);
-  console.log("🚀 ~ InfiniteCanvas ~ isDrawing:", isDrawing);
   const [startX, setStartX] = useState(0);
-  console.log("🚀 ~ InfiniteCanvas ~ startX:", startX);
   const [startY, setStartY] = useState(0);
-  console.log("🚀 ~ InfiniteCanvas ~ startY:", startY);
-  const [addItem, setAddItem] = useState<"rectangle" | "circle">("rectangle");
+  const [tempRect, setTempRect] = useState<Item | null>(null);
+  const [currentWidth, setCurrentWidth] = useState<number>(0);
+  const [currentHeight, setCurrentHeight] = useState<number>(0);
+  const [currentRadius, setCurrentRadius] = useState<number>(0);
+  const [selectItem, setSelectItem] = useState<"rectangle" | "circle">(
+    "rectangle"
+  );
+
   type Item = {
     type: "rectangle" | "circle";
     x: number;
@@ -35,7 +37,6 @@ const InfiniteCanvas = () => {
   };
 
   const [items, setItems] = useState<Item[]>([]);
-
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
     if (!canvas) return;
@@ -87,12 +88,28 @@ const InfiniteCanvas = () => {
             item.height as number
           );
         } else if (item.type === "circle") {
-          ctx.fillStyle = "red";
           ctx.beginPath();
-          ctx.arc(item.x, item.y, 50, 0, 2 * Math.PI);
-          ctx.fill();
+          ctx.arc(item.x, item.y, item.radius!, 0, 2 * Math.PI);
+          ctx.stroke();
         }
       });
+
+      if (tempRect) {
+        ctx.strokeStyle = "red";
+        if (selectItem == "rectangle") {
+          ctx.strokeRect(
+            tempRect.x,
+            tempRect.y,
+            tempRect.width!,
+            tempRect.height!
+          );
+        } else if (tempRect.type == "circle") {
+          ctx.strokeStyle = "red";
+          ctx.beginPath();
+          ctx.arc(tempRect.x, tempRect.y, tempRect.radius!, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+      }
 
       ctx.restore();
     };
@@ -110,24 +127,27 @@ const InfiniteCanvas = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [scale, translateX, translateY, items]);
-
-  // const addItem = (type: "rectangle" | "circle") => {
-  //   if (!canvasRef.current) return;
-  //   const newItem = {
-  //     type,
-  //     x: (canvasRef.current.width / 2 - translateX) / scale,
-  //     y: (canvasRef.current.height / 2 - translateY) / scale,
-  //   };
-  //   setItems([...items, newItem]);
-  // };
+  }, [
+    scale,
+    translateX,
+    translateY,
+    currentHeight,
+    currentWidth,
+    currentRadius,
+  ]);
 
   return (
     <div>
-      <div className="text-center text-white font-bold text-md  fixed bottom-0  left-4  z-10 bg-white-100 p-2 rounded shadow">
-        Zoom: {(scale * 100).toFixed(0)}%
+      <div className="flex justify-between w-full bg-red-500 z-10">
+        <div className="text-center text-red font-bold text-md  fixed bottom-0  left-4  z-10 bg-white-100 p-2 rounded shadow">
+          Zoom: {(scale * 100).toFixed(0)}%
+        </div>
+        <Toolbar setSelectItem={setSelectItem} />
+
+        <div>
+          <Join />
+        </div>
       </div>
-      <Toolbar setAddItem={setAddItem} />
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
         <canvas
           ref={canvasRef}
@@ -146,6 +166,7 @@ const InfiniteCanvas = () => {
           onMouseDown={(event) =>
             handleMouseDown(
               event,
+              scale,
               setIsDrawing,
               setStartX,
               setStartY,
@@ -159,19 +180,29 @@ const InfiniteCanvas = () => {
               isDrawing,
               startX,
               startY,
-              setTranslateX,
-              setTranslateY
+              translateX,
+              translateY,
+              selectItem,
+              setTempRect,
+              setCurrentHeight,
+              setCurrentWidth,
+              setCurrentRadius,
+              scale
             )
           }
           onMouseUp={() =>
             handleMouseUp(
               setItems,
-              addItem,
+              selectItem,
               startX,
               startY,
               translateX,
               translateY,
-              setIsDrawing
+              currentHeight,
+              currentWidth,
+              currentRadius,
+              setIsDrawing,
+              setTempRect
             )
           }
           onMouseLeave={() => handleMouseLeave(setIsDrawing)}

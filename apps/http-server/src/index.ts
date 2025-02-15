@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { client } from "@repo/db/client";
-
+import cors from "cors";
 import bcrypt from "bcrypt";
 import { authMiddleware } from "./middleware/auth";
 
@@ -17,7 +17,7 @@ async function verifyPassword(inputPassword: string, hashPassword: string) {
 }
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 
 app.post("/signup", async (req: Request, res: Response) => {
@@ -100,7 +100,7 @@ app.post(
 app.post(
   "/joinroom",
   authMiddleware,
-  async (req: AuthRequest, res: Response, next) => {
+  async (req: AuthRequest, res: Response) => {
     const { roomName } = req.body;
 
     try {
@@ -123,10 +123,15 @@ app.post(
         },
       });
       res.status(200).json({
-        messae: "Join the room Successfull",
+        message: "Join the room Successfull",
         roomId: room.id,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error in /joinroom:", error);
+      res.json({
+        error: "Error in joining the room",
+      });
+    }
   }
 );
 

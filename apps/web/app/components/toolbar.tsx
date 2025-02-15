@@ -2,15 +2,17 @@
 import React, { Dispatch, SetStateAction } from "react";
 
 interface propsToolBar {
-  setAddItem: Dispatch<SetStateAction<"rectangle" | "circle">>;
+  setSelectItem: Dispatch<SetStateAction<"rectangle" | "circle">>;
 }
 
-const Toolbar = ({ setAddItem }: propsToolBar) => {
+const Toolbar = ({ setSelectItem }: propsToolBar) => {
   return (
-    <div className="relative top-4 left-10 bg-white p-4 rounded shadow z-10">
+    <div className="flex justify-between w-full  relative top-4 left-10 bg-white p-4 rounded shadow z-10">
       <div className="gap-4 flex flex-row">
-        <button onClick={() => setAddItem("rectangle")}>Add Rectangle</button>
-        <button onClick={() => setAddItem("circle")}>Add Circle</button>
+        <button onClick={() => setSelectItem("rectangle")}>
+          Add Rectangle
+        </button>
+        <button onClick={() => setSelectItem("circle")}>Add Circle</button>
       </div>
     </div>
   );
