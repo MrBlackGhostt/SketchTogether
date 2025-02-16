@@ -10,6 +10,7 @@ import {
 } from "../utils/canvasFun";
 import Join from "./join";
 import { Button } from "@repo/ui/button";
+import CreateRoom from "./createRoom";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -146,6 +147,7 @@ const InfiniteCanvas = () => {
 
         <div>
           <Join />
+          <CreateRoom />
         </div>
       </div>
       <div style={{ position: "relative", width: "100%", height: "100%" }}>

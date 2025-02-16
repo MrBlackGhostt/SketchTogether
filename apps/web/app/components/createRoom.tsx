@@ -1,15 +1,16 @@
+import Input from "@repo/ui/input";
 import React, { useState } from "react";
 
-async function joinRom(params: string) {
+async function createRoom(params: string) {
   console.log("before the req");
   const url = process.env.NEXT_PUBLIC_BACKEND_URL;
   try {
-    const res = await fetch(`${url}/joinroom`, {
+    const res = await fetch(`${url}/createroom`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ roomName: params }),
+      body: JSON.stringify({ name: params }),
       credentials: "include",
     });
     const data = await res.json();
@@ -21,26 +22,26 @@ async function joinRom(params: string) {
   }
 }
 
-const Join = () => {
+const CreateRoom = () => {
   const [EnterroomName, setEnterRoomName] = useState<string>("");
 
-  const handleJoinRoom = async (e: React.FormEvent) => {
+  const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await joinRom(EnterroomName);
-    console.log("🚀 ~ Join ~ response:", response);
+    const response = await createRoom(EnterroomName);
+    console.log("🚀 ~ CreateRoom ~ response:", response);
   };
   return (
     <div className="w-10">
-      <form onSubmit={handleJoinRoom}>
-        <input
+      <form onSubmit={handleCreateRoom}>
+        <Input
           type="text"
-          onChange={(e) => setEnterRoomName(e.target.value)}
+          setFun={setEnterRoomName}
           placeholder="Enter the room name"
         />
-        <button type="submit">Join room</button>
+        <button type="submit">CreateRoom </button>
       </form>
     </div>
   );
 };
 
-export default Join;
+export default CreateRoom;
