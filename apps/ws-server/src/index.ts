@@ -1,6 +1,7 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { client } from "@repo/db/client";
-
+import { verifyToken } from "@repo/auth/token";
+import cookie from "cookie";
 const wss = new WebSocketServer({ port: 8080 });
 
 // Store room connections
@@ -11,10 +12,22 @@ wss.on("connection", function connection(ws, req) {
   const roomId = url.searchParams.get("roomId");
   const userId = url.searchParams.get("userId");
 
+  if (!userId) {
+    console.log("❌ Invalid token, closing connection");
+    ws.close();
+    return;
+  }
+
   if (!roomId || !userId) {
     ws.close();
     return;
   }
+
+  const interval = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: "ping" }));
+    }
+  }, 3000);
 
   // Add user to room
   if (!rooms.has(roomId)) {
@@ -44,6 +57,7 @@ wss.on("connection", function connection(ws, req) {
 
   ws.on("close", () => {
     // Remove user from room
+    clearInterval(interval);
     rooms.get(roomId)?.delete(ws);
     if (rooms.get(roomId)?.size === 0) {
       rooms.delete(roomId);

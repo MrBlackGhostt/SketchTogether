@@ -1,9 +1,13 @@
 "use client";
 import Input from "@repo/ui/input";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-const Signin = () => {
+const Signin = ({
+  setUserId,
+}: {
+  setUserId: Dispatch<SetStateAction<string>>;
+}) => {
   const [userEmail, setUserEmail] = useState<string>("");
   const [userPassword, setUserPassword] = useState<string>("");
 
@@ -25,7 +29,10 @@ const Signin = () => {
       credentials: "include",
     });
     const da̵ta = await res.json();
-    document.cookie = `token=${da̵ta}; path=/; secure; samesite=strict`;
+    console.log("🚀 ~ handleSignin ~ da̵ta:", da̵ta);
+    const userId = da̵ta.userId;
+    setUserId(userId);
+    document.cookie = `token=${da̵ta.token}; path=/; secure; samesite=strict`;
     console.log("🚀 ~ handleSignin ~ da̵ta:", da̵ta);
     return da̵ta;
   };

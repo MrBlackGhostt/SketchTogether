@@ -11,6 +11,8 @@ import {
 import Join from "./join";
 import { Button } from "@repo/ui/button";
 import CreateRoom from "./createRoom";
+import { connectToWebSocket } from "../utils/ws";
+import Signin from "./signin";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -27,6 +29,10 @@ const InfiniteCanvas = () => {
   const [selectItem, setSelectItem] = useState<"rectangle" | "circle">(
     "rectangle"
   );
+  const [roomId, setRoomId] = useState<string>("");
+
+  const [userId, setUserId] = useState<string>("");
+  console.log("🚀 ~ InfiniteCanvas ~ userId:", userId);
 
   type Item = {
     type: "rectangle" | "circle";
@@ -38,6 +44,13 @@ const InfiniteCanvas = () => {
   };
 
   const [items, setItems] = useState<Item[]>([]);
+
+  useEffect(() => {
+    if (roomId) {
+      connectToWebSocket(roomId, userId);
+    }
+  }, [roomId, items]);
+
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
     if (!canvas) return;
@@ -144,9 +157,11 @@ const InfiniteCanvas = () => {
           Zoom: {(scale * 100).toFixed(0)}%
         </div>
         <Toolbar setSelectItem={setSelectItem} />
-
+        <div style={{ position: "absolute", top: 0, right: 0 }}>
+          <Signin setUserId={setUserId} />
+        </div>
         <div>
-          <Join />
+          <Join setRoomId={setRoomId} />
           <CreateRoom />
         </div>
       </div>

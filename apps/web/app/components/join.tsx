@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 async function joinRom(params: string) {
   console.log("before the req");
@@ -21,13 +21,18 @@ async function joinRom(params: string) {
   }
 }
 
-const Join = () => {
+const Join = ({
+  setRoomId,
+}: {
+  setRoomId: Dispatch<SetStateAction<string>>;
+}) => {
   const [EnterroomName, setEnterRoomName] = useState<string>("");
 
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
     const response = await joinRom(EnterroomName);
     console.log("🚀 ~ Join ~ response:", response);
+    setRoomId(response.roomId);
   };
   return (
     <div className="w-10">
