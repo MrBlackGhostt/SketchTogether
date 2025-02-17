@@ -6,13 +6,20 @@ type Item = {
   height?: number;
   radius?: number;
 };
-export const connectToWebSocket = (roomId: string, userId: string) => {
+export const connectToWebSocket = (
+  roomId: string,
+  userId: string,
+  tempRect: Item | null
+) => {
   console.log("🚀 ~ connectToWebSocket ~ userId:", userId);
   const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
   const ws = new WebSocket(`${url}?roomId=${roomId}&userId=${userId}`);
 
   ws.onopen = () => {
     console.log("✅ WebSocket Connected");
+    if (tempRect) {
+      ws.send(tempRect.toString());
+    }
   };
 
   ws.onmessage = (event) => {

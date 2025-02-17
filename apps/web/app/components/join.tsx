@@ -23,8 +23,10 @@ async function joinRom(params: string) {
 
 const Join = ({
   setRoomId,
+  // wsConnect,
 }: {
   setRoomId: Dispatch<SetStateAction<string>>;
+  // wsConnect: WebSocket;
 }) => {
   const [EnterroomName, setEnterRoomName] = useState<string>("");
 
@@ -33,6 +35,10 @@ const Join = ({
     const response = await joinRom(EnterroomName);
     console.log("🚀 ~ Join ~ response:", response);
     setRoomId(response.roomId);
+    // wsConnect;
+    // wsConnect.onopen = () => {
+    //   console.log("Connection successufull");
+    // };
   };
   return (
     <div className="w-10">

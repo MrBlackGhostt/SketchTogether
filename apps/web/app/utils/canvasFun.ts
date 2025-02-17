@@ -102,7 +102,9 @@ export const handleMouseUp = (
   currentWidth: number,
   currentRadius: number,
   setIsDrawing: Dispatch<SetStateAction<boolean>>,
-  setTempRect: Dispatch<SetStateAction<Item | null>>
+  setTempRect: Dispatch<SetStateAction<Item | null>>,
+  tempRect: Item | null,
+  setLatestItem: Dispatch<SetStateAction<Item | null>>
 ) => {
   setItems((prev) => [
     ...prev,
@@ -121,8 +123,8 @@ export const handleMouseUp = (
           radius: Math.abs(currentRadius),
         },
   ]);
-
-  setTempRect(null); // Clear tempRect after adding the final shape
+  setLatestItem(tempRect);
+  setTempRect(null);
   setIsDrawing(false);
 };
 

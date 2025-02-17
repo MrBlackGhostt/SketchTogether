@@ -11,7 +11,6 @@ wss.on("connection", function connection(ws, req) {
   const url = new URL(req.url || "", "http://localhost");
   const roomId = url.searchParams.get("roomId");
   const userId = url.searchParams.get("userId");
-
   if (!userId) {
     console.log("❌ Invalid token, closing connection");
     ws.close();
@@ -23,12 +22,6 @@ wss.on("connection", function connection(ws, req) {
     return;
   }
 
-  const interval = setInterval(() => {
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: "ping" }));
-    }
-  }, 3000);
-
   // Add user to room
   if (!rooms.has(roomId)) {
     rooms.set(roomId, new Set());
@@ -39,11 +32,16 @@ wss.on("connection", function connection(ws, req) {
     console.log("Received:", data.toString());
 
     // Save to database
-    await client.chat.create({
+    const elementData = JSON.parse(data.toString());
+    await client.element.create({
       data: {
+        type: elementData.type,
+        x: elementData.x,
+        y: elementData.y,
+        width: elementData?.width,
+        height: elementData?.height,
         roomId: roomId,
-        message: data.toString(),
-        userId: userId,
+        // radius: elementData?.radius,
       },
     });
 
@@ -57,7 +55,7 @@ wss.on("connection", function connection(ws, req) {
 
   ws.on("close", () => {
     // Remove user from room
-    clearInterval(interval);
+
     rooms.get(roomId)?.delete(ws);
     if (rooms.get(roomId)?.size === 0) {
       rooms.delete(roomId);

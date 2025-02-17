@@ -9,10 +9,11 @@ import {
   handleWheel,
 } from "../utils/canvasFun";
 import Join from "./join";
-import { Button } from "@repo/ui/button";
+
 import CreateRoom from "./createRoom";
 import { connectToWebSocket } from "../utils/ws";
 import Signin from "./signin";
+import { json } from "stream/consumers";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -29,6 +30,7 @@ const InfiniteCanvas = () => {
   const [selectItem, setSelectItem] = useState<"rectangle" | "circle">(
     "rectangle"
   );
+  const [latestItem, setLatestItem] = useState<Item | null>(null);
   const [roomId, setRoomId] = useState<string>("");
 
   const [userId, setUserId] = useState<string>("");
@@ -44,12 +46,29 @@ const InfiniteCanvas = () => {
   };
 
   const [items, setItems] = useState<Item[]>([]);
+  const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
   useEffect(() => {
     if (roomId) {
-      connectToWebSocket(roomId, userId);
+      const ws = new WebSocket(`${url}?roomId=${roomId}&userId=${userId}`!);
+      // connectToWebSocket(roomId, userId, tempRect);
+      ws.onopen = () => {
+        console.log("connection successfuill");
+        const data = JSON.stringify(latestItem);
+
+        ws.send(data);
+      };
+      ws.onmessage = (event) => {
+        const dataReceived = JSON.parse(event.data);
+        console.log("🚀 ~ useEffect ~ dataReceived:", dataReceived.message);
+        if (dataReceived) {
+          const receiveItem = JSON.parse(dataReceived.message);
+          console.log("🚀 ~ useEffect ~ receiveItem:", receiveItem);
+          setItems((prev) => [...prev, receiveItem]);
+        }
+      };
     }
-  }, [roomId, items]);
+  }, [roomId, latestItem]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
@@ -109,6 +128,7 @@ const InfiniteCanvas = () => {
       });
 
       if (tempRect) {
+        // ws.send(data);
         ctx.strokeStyle = "red";
         if (selectItem == "rectangle") {
           ctx.strokeRect(
@@ -219,7 +239,9 @@ const InfiniteCanvas = () => {
               currentWidth,
               currentRadius,
               setIsDrawing,
-              setTempRect
+              setTempRect,
+              tempRect,
+              setLatestItem
             )
           }
           onMouseLeave={() => handleMouseLeave(setIsDrawing)}
