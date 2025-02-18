@@ -96,8 +96,7 @@ export const handleMouseUp = (
   selectItem: "rectangle" | "circle",
   startX: number,
   startY: number,
-  translateX: number,
-  translateY: number,
+
   currentHeight: number,
   currentWidth: number,
   currentRadius: number,

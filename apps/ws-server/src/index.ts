@@ -11,6 +11,7 @@ wss.on("connection", function connection(ws, req) {
   const url = new URL(req.url || "", "http://localhost");
   const roomId = url.searchParams.get("roomId");
   const userId = url.searchParams.get("userId");
+
   if (!userId) {
     console.log("❌ Invalid token, closing connection");
     ws.close();
@@ -33,17 +34,20 @@ wss.on("connection", function connection(ws, req) {
 
     // Save to database
     const elementData = JSON.parse(data.toString());
-    await client.element.create({
-      data: {
-        type: elementData.type,
-        x: elementData.x,
-        y: elementData.y,
-        width: elementData?.width,
-        height: elementData?.height,
-        roomId: roomId,
-        // radius: elementData?.radius,
-      },
-    });
+    console.log("🚀 ~ message ~ elementData:", elementData);
+    if (elementData) {
+      await client.element.create({
+        data: {
+          type: elementData.type,
+          x: elementData.x,
+          y: elementData.y,
+          width: elementData?.width,
+          height: elementData?.height,
+          roomId: roomId,
+          // radius: elementData?.radius,
+        },
+      });
+    }
 
     // Broadcast message to everyone in the room
     rooms.get(roomId)?.forEach((client) => {

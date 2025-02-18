@@ -133,16 +133,29 @@ app.post(
         });
         return;
       }
-      await client.roomUser.create({
-        data: {
+      const checkUser = await client.roomUser.findFirst({
+        where: {
           roomId: room.id,
-          userId: userId!,
+          userId,
         },
       });
-      res.status(200).json({
-        message: "Join the room Successfull",
-        roomId: room.id,
-      });
+      if (checkUser) {
+        res.status(200).json({
+          message: "Join the room Successfull",
+          roomId: room.id,
+        });
+      } else {
+        await client.roomUser.create({
+          data: {
+            roomId: room.id,
+            userId: userId!,
+          },
+        });
+        res.status(200).json({
+          message: "Join the room Successfull",
+          roomId: room.id,
+        });
+      }
     } catch (error) {
       console.error("Error in /joinroom:", error);
       res.json({

@@ -34,8 +34,6 @@ const InfiniteCanvas = () => {
   const [roomId, setRoomId] = useState<string>("");
 
   const [userId, setUserId] = useState<string>("");
-  console.log("🚀 ~ InfiniteCanvas ~ userId:", userId);
-
   type Item = {
     type: "rectangle" | "circle";
     x: number;
@@ -54,16 +52,16 @@ const InfiniteCanvas = () => {
       // connectToWebSocket(roomId, userId, tempRect);
       ws.onopen = () => {
         console.log("connection successfuill");
-        const data = JSON.stringify(latestItem);
+        if (latestItem) {
+          const data = JSON.stringify(latestItem);
 
-        ws.send(data);
+          ws.send(data);
+        }
       };
       ws.onmessage = (event) => {
         const dataReceived = JSON.parse(event.data);
-        console.log("🚀 ~ useEffect ~ dataReceived:", dataReceived.message);
         if (dataReceived) {
           const receiveItem = JSON.parse(dataReceived.message);
-          console.log("🚀 ~ useEffect ~ receiveItem:", receiveItem);
           setItems((prev) => [...prev, receiveItem]);
         }
       };
@@ -78,6 +76,7 @@ const InfiniteCanvas = () => {
       console.log("Ctx is null");
       return;
     }
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -112,7 +111,7 @@ const InfiniteCanvas = () => {
 
       // Draw added items
       items.forEach((item) => {
-        if (item.type === "rectangle") {
+        if (item.type && item.type === "rectangle") {
           ctx.strokeStyle = "blue";
           ctx.strokeRect(
             item.x,
@@ -168,8 +167,12 @@ const InfiniteCanvas = () => {
     currentHeight,
     currentWidth,
     currentRadius,
+    items,
   ]);
 
+  useEffect(() => {
+    console.log("Updated Items:", items);
+  }, [items]);
   return (
     <div>
       <div className="flex justify-between w-full bg-red-500 z-10">
@@ -233,8 +236,7 @@ const InfiniteCanvas = () => {
               selectItem,
               startX,
               startY,
-              translateX,
-              translateY,
+
               currentHeight,
               currentWidth,
               currentRadius,
