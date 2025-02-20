@@ -54,7 +54,7 @@ export const handleMouseMove = (
   startY: number,
   translateX: number,
   translateY: number,
-  selectItem: "rectangle" | "circle",
+  selectItem: "rectangle" | "circle" | "pointer" | null,
   setTempRect: Dispatch<SetStateAction<Item | null>>,
   setCurrentHeight: Dispatch<SetStateAction<number>>,
   setCurrentWidth: Dispatch<SetStateAction<number>>,
@@ -93,7 +93,7 @@ export const handleMouseMove = (
 
 export const handleMouseUp = (
   setItems: Dispatch<SetStateAction<Item[]>>,
-  selectItem: "rectangle" | "circle",
+  selectItem: "rectangle" | "circle" | "pointer" | null,
   startX: number,
   startY: number,
 

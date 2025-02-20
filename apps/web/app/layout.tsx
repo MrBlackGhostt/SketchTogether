@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Navbar from "./components/Navbar";
+import { ItemsSelectProvider } from "./utils/contexts/ItemSelectContext";
+import { AuthContextProvider } from "./utils/contexts/AuthContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,7 +27,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <ItemsSelectProvider>
+          <AuthContextProvider>
+            <div
+              style={{ position: "sticky", top: 0, marginTop: 10, zIndex: 10 }}
+            >
+              <Navbar />
+            </div>
+            {children}
+          </AuthContextProvider>
+        </ItemsSelectProvider>
       </body>
     </html>
   );

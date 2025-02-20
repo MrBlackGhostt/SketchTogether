@@ -11,9 +11,9 @@ import {
 import Join from "./join";
 
 import CreateRoom from "./createRoom";
-import { connectToWebSocket } from "../utils/ws";
+
 import Signin from "./signin";
-import { json } from "stream/consumers";
+import { useSelectItem } from "../utils/contexts/ItemSelectContext";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -27,13 +27,17 @@ const InfiniteCanvas = () => {
   const [currentWidth, setCurrentWidth] = useState<number>(0);
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentRadius, setCurrentRadius] = useState<number>(0);
-  const [selectItem, setSelectItem] = useState<"rectangle" | "circle">(
-    "rectangle"
-  );
+
+  // const [itemSelect, setItemSelect] = useState<"rectangle" | "circle">(
+  //   "rectangle"
+  // );
   const [latestItem, setLatestItem] = useState<Item | null>(null);
   const [roomId, setRoomId] = useState<string>("");
 
   const [userId, setUserId] = useState<string>("");
+
+  const { itemSelect, setItemSelect } = useSelectItem();
+
   type Item = {
     type: "rectangle" | "circle";
     x: number;
@@ -62,11 +66,15 @@ const InfiniteCanvas = () => {
         const dataReceived = JSON.parse(event.data);
         if (dataReceived) {
           const receiveItem = JSON.parse(dataReceived.message);
-          setItems((prev) => [...prev, receiveItem]);
+          setItems((prev) => {
+            const newItem = [...prev, receiveItem];
+
+            return newItem;
+          });
         }
       };
     }
-  }, [roomId, latestItem]);
+  }, [latestItem]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
@@ -129,7 +137,7 @@ const InfiniteCanvas = () => {
       if (tempRect) {
         // ws.send(data);
         ctx.strokeStyle = "red";
-        if (selectItem == "rectangle") {
+        if (itemSelect == "rectangle") {
           ctx.strokeRect(
             tempRect.x,
             tempRect.y,
@@ -173,13 +181,14 @@ const InfiniteCanvas = () => {
   useEffect(() => {
     console.log("Updated Items:", items);
   }, [items]);
+
   return (
     <div>
       <div className="flex justify-between w-full bg-red-500 z-10">
         <div className="text-center text-red font-bold text-md  fixed bottom-0  left-4  z-10 bg-white-100 p-2 rounded shadow">
           Zoom: {(scale * 100).toFixed(0)}%
         </div>
-        <Toolbar setSelectItem={setSelectItem} />
+        {/* <Toolbar setItemSelect={setItemSelect} /> */}
         <div style={{ position: "absolute", top: 0, right: 0 }}>
           <Signin setUserId={setUserId} />
         </div>
@@ -222,7 +231,7 @@ const InfiniteCanvas = () => {
               startY,
               translateX,
               translateY,
-              selectItem,
+              itemSelect,
               setTempRect,
               setCurrentHeight,
               setCurrentWidth,
@@ -233,7 +242,7 @@ const InfiniteCanvas = () => {
           onMouseUp={() =>
             handleMouseUp(
               setItems,
-              selectItem,
+              itemSelect,
               startX,
               startY,
 

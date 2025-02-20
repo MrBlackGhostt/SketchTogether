@@ -48,6 +48,8 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.post("/signin", async (req: AuthRequest, res: Response) => {
   const { email, password } = req.body;
+  console.log("🚀 ~ app.post ~ email:", email);
+  console.log("🚀 ~ app.post ~ password:", password);
 
   try {
     const user = await client.user.findFirst({
@@ -79,6 +81,7 @@ app.post("/signin", async (req: AuthRequest, res: Response) => {
     res.status(200).send({
       token,
       userId: user.id,
+      username: user.name,
     });
   } catch (error) {
     res.status(500).json({

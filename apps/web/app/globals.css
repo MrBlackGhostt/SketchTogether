@@ -48,3 +48,22 @@ a {
     display: unset;
   }
 }
+
+#svg-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40;
+  width: 40;
+  &:hover {
+    background-color: rgb(115, 109, 109);
+    border-radius: 10px;
+  }
+}
+
+svg {
+  cursor: pointer;
+  &:hover {
+    fill: gray;
+  }
+}
