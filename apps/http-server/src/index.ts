@@ -73,9 +73,9 @@ app.post("/signin", async (req: AuthRequest, res: Response) => {
     const token = generateToken(user.id);
 
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-      sameSite: true,
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
     });
 
     res.status(200).send({

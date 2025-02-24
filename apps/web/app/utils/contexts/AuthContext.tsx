@@ -13,7 +13,7 @@ export const AuthContextProvider = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState({ username: "" });
   const [accountCreated, setCreateAccount] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>("");
   const url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const SignUp = async ({ username, email, password }: SignUpProps) => {
@@ -30,6 +30,7 @@ export const AuthContextProvider = ({
       const dataGet = await res.json();
       if (dataGet) {
         setCreateAccount(true);
+        setError(null);
       }
     } catch (error) {
       console.log("Error in context Singup", error);
@@ -46,6 +47,7 @@ export const AuthContextProvider = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const dataGet = await res.json();
@@ -53,11 +55,18 @@ export const AuthContextProvider = ({
       if (dataGet) {
         setIsAuthenticated(true);
         setUserData({ username: dataGet.username });
+        setError(null);
       }
     } catch (error) {
       console.log("Error in context Singup", error);
       setError("Error in SignIn");
     }
+  };
+
+  const SignOut = () => {
+    console.log("Signout");
+    setIsAuthenticated(false);
+    setUserData({ username: "null" });
   };
 
   return (
@@ -69,6 +78,7 @@ export const AuthContextProvider = ({
         accountCreated,
         SignIn,
         SignUp,
+        SignOut,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { ItemsSelectProvider } from "./utils/contexts/ItemSelectContext";
 import { AuthContextProvider } from "./utils/contexts/AuthContext";
+import { RoomContextProivider } from "./utils/contexts/Room-Context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,12 +30,19 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ItemsSelectProvider>
           <AuthContextProvider>
-            <div
-              style={{ position: "sticky", top: 0, marginTop: 10, zIndex: 10 }}
-            >
-              <Navbar />
-            </div>
-            {children}
+            <RoomContextProivider>
+              <div
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  marginTop: 10,
+                  zIndex: 10,
+                }}
+              >
+                <Navbar />
+              </div>
+              {children}
+            </RoomContextProivider>
           </AuthContextProvider>
         </ItemsSelectProvider>
       </body>

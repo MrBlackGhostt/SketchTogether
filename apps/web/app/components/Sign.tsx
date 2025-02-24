@@ -14,12 +14,18 @@ const Sign = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (modalType == "signIn") {
-      SignIn({ email, password });
+      await SignIn({ email, password });
+      if (!error) {
+        closeModal();
+      }
     } else {
-      SignUp({ username, email, password });
+      await SignUp({ username, email, password });
+      if (!error) {
+        closeModal();
+      }
     }
   };
 
@@ -40,13 +46,13 @@ const Sign = ({
     >
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "gray",
           padding: "20px",
           borderRadius: "10px",
           minWidth: "300px",
           position: "relative",
         }}
-        onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           style={{
@@ -67,22 +73,30 @@ const Sign = ({
           {modalType == "signUp" && (
             <input
               type="text"
+              className="sign"
               placeholder="Username"
               onChange={(e) => setUserName(e.target.value)}
-              style={{ display: "block", margin: "10px 0", padding: "5px" }}
+              style={{
+                display: "block",
+                border: "none",
+                borderRadius: "10px",
+                margin: "10px 0",
+                padding: "5px",
+                width: "100%",
+              }}
             />
           )}
           <input
             type="email"
+            className="sign"
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
-            style={{ display: "block", margin: "10px 0", padding: "5px" }}
           />
           <input
             type="password"
+            className="sign"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
-            style={{ display: "block", margin: "10px 0", padding: "5px" }}
           />
           <button
             type="submit"

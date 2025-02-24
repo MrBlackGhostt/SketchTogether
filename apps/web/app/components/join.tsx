@@ -1,40 +1,18 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { useRoom } from "../utils/contexts/Room-Context";
+import { error } from "console";
 
-async function joinRom(params: string) {
-  console.log("before the req");
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL;
-  try {
-    const res = await fetch(`${url}/joinroom`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ roomName: params }),
-      credentials: "include",
-    });
-    const data = await res.json();
-
-    return data;
-  } catch (error) {
-    console.log("Error in req", error);
-    return null;
-  }
-}
-
-const Join = ({
-  setRoomId,
-  // wsConnect,
-}: {
-  setRoomId: Dispatch<SetStateAction<string>>;
-  // wsConnect: WebSocket;
-}) => {
+const Join = () => {
   const [EnterroomName, setEnterRoomName] = useState<string>("");
+  const { JoinRoom, error } = useRoom();
 
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await joinRom(EnterroomName);
-    console.log("🚀 ~ Join ~ response:", response);
-    setRoomId(response.roomId);
+    await JoinRoom(EnterroomName);
+    if (error) {
+      console.log("ERROR", error);
+      throw new Error(error);
+    }
   };
   return (
     <div className="w-10">

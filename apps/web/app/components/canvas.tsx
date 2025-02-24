@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
-import Toolbar from "./toolbar";
+
 import {
   handleMouseDown,
   handleMouseLeave,
@@ -8,12 +8,12 @@ import {
   handleMouseUp,
   handleWheel,
 } from "../utils/canvasFun";
-import Join from "./join";
 
 import CreateRoom from "./createRoom";
 
 import Signin from "./signin";
 import { useSelectItem } from "../utils/contexts/ItemSelectContext";
+import { useRoom } from "../utils/contexts/Room-Context";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -28,15 +28,13 @@ const InfiniteCanvas = () => {
   const [currentHeight, setCurrentHeight] = useState<number>(0);
   const [currentRadius, setCurrentRadius] = useState<number>(0);
 
-  // const [itemSelect, setItemSelect] = useState<"rectangle" | "circle">(
-  //   "rectangle"
-  // );
   const [latestItem, setLatestItem] = useState<Item | null>(null);
-  const [roomId, setRoomId] = useState<string>("");
 
   const [userId, setUserId] = useState<string>("");
 
   const { itemSelect, setItemSelect } = useSelectItem();
+
+  const { roomId } = useRoom();
 
   type Item = {
     type: "rectangle" | "circle";
@@ -191,10 +189,6 @@ const InfiniteCanvas = () => {
         {/* <Toolbar setItemSelect={setItemSelect} /> */}
         <div style={{ position: "absolute", top: 0, right: 0 }}>
           <Signin setUserId={setUserId} />
-        </div>
-        <div>
-          <Join setRoomId={setRoomId} />
-          <CreateRoom />
         </div>
       </div>
       <div style={{ position: "relative", width: "100%", height: "100%" }}>

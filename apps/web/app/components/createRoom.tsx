@@ -1,34 +1,17 @@
 import Input from "@repo/ui/input";
 import React, { useState } from "react";
-
-async function createRoom(params: string) {
-  console.log("before the req");
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL;
-  try {
-    const res = await fetch(`${url}/createroom`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: params }),
-      credentials: "include",
-    });
-    const data = await res.json();
-
-    return data;
-  } catch (error) {
-    console.log("Error in req", error);
-    return null;
-  }
-}
+import { useRoom } from "../utils/contexts/Room-Context";
 
 const CreateRoom = () => {
   const [EnterroomName, setEnterRoomName] = useState<string>("");
-
+  const { CreateRoom, error } = useRoom();
   const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await createRoom(EnterroomName);
-    console.log("🚀 ~ CreateRoom ~ response:", response);
+    await CreateRoom(EnterroomName);
+    if (error) {
+      console.log("ERROR", error);
+      throw new Error(error);
+    }
   };
   return (
     <div className="w-10">

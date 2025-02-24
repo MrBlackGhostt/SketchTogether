@@ -1,22 +1,23 @@
 "use client";
-import React, { useState } from "react";
-import Sign from "./Sign";
 
-const UserControl = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
+import { useState } from "react";
+import { useAuth } from "../utils/contexts/AuthContext";
+import Sign from "./Sign";
+import UserIcon from "../icons/UserIcon";
+import LogoutIcon from "../icons/Logout";
+import Join from "./join";
+import CreateRoom from "./createRoom";
+// import { LogOut, Download, User } from "lucide-react";
+
+const UserMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"signIn" | "signUp" | null>(null);
-
-  const handleSignIn = () => {
-    setUsername("MRBlackGhost"); // Replace with actual login logic
-    setIsAuthenticated(true);
-    setIsModalOpen(false);
-  };
+  const [roomId, setRoomId] = useState<string>("");
+  const { isAuthenticated, userData, SignOut } = useAuth();
 
   const handleSignOut = () => {
-    setIsAuthenticated(false);
-    setUsername("");
+    SignOut();
   };
 
   const handleOpenModal = (type: "signIn" | "signUp") => {
@@ -31,53 +32,47 @@ const UserControl = () => {
   return (
     <div>
       {isAuthenticated ? (
-        <div
-          style={{
-            padding: "5px 15px",
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: "15px",
-            cursor: "pointer",
-            display: "inline-block",
-          }}
-          onClick={handleSignOut}
-        >
-          {username.slice(0, 3).toUpperCase()}{" "}
-          {/* Shows "MRB" for "MRBlackGhost" */}
+        <div className="user-menu">
+          <button className="avatar-button" onClick={() => setIsOpen(!isOpen)}>
+            <div className="avatar">
+              {userData.username &&
+                userData?.username.slice(0, 2).toUpperCase()}
+            </div>
+          </button>
+          {isOpen && (
+            <div className="dropdown-menu">
+              <div className="menu-item">
+                <UserIcon width="16" height="16" /> Profile
+              </div>
+              <div className="menu-item">
+                <Join /> Room
+              </div>
+              <div className="menu-item">
+                <CreateRoom /> Room
+              </div>
+
+              <div className="menu-item logout" onClick={handleSignOut}>
+                <LogoutIcon width="16" height="16" /> Sign Out
+              </div>
+            </div>
+          )}
         </div>
       ) : (
-        <>
+        <div className="auth-buttons">
           <button
-            style={{
-              marginRight: "10px",
-              padding: "5px 10px",
-              cursor: "pointer",
-              backgroundColor: "black",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-            }}
+            className="auth-button"
             onClick={() => handleOpenModal("signIn")}
           >
             Sign In
           </button>
           <button
-            style={{
-              padding: "5px 10px",
-              cursor: "pointer",
-              backgroundColor: "black",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-            }}
+            className="auth-button"
             onClick={() => handleOpenModal("signUp")}
           >
             Sign Up
           </button>
-        </>
+        </div>
       )}
-
-      {/* Modal */}
       {isModalOpen && (
         <Sign modalType={modalType} closeModal={handleCloseModal} />
       )}
@@ -85,4 +80,4 @@ const UserControl = () => {
   );
 };
 
-export default UserControl;
+export default UserMenu;

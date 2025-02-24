@@ -67,3 +67,68 @@ svg {
     fill: gray;
   }
 }
+
+.sign {
+  display: block;
+  border: none;
+  border-radius: 15px;
+  margin: 10px 0;
+  padding: 5px;
+  width: 100%;
+}
+
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+.avatar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: blue;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 150px;
+  background: rgba(36, 3, 249, 0.1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.menu-item {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.menu-item:hover {
+  background: rgb(72, 78, 241);
+}
+.logout {
+  color: red;
+}
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+.auth-button {
+  padding: 5px 10px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

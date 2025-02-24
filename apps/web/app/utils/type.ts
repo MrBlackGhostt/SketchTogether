@@ -21,8 +21,17 @@ export interface SignInProps {
 export interface AuthContextProps {
   isAuthenticated: boolean;
   userData: { username: string };
-  error: string;
+  error: string | null;
   accountCreated: boolean;
   SignUp: (item: SignUpProps) => void;
   SignIn: (item: SignInProps) => void;
+  SignOut: () => void;
+}
+
+export interface RoomContextProps {
+  roomId: string | null;
+  setRoomId: (item: string) => void;
+  JoinRoom: (i: string) => void;
+  CreateRoom: (i: string) => void;
+  error: string | null;
 }
