@@ -1,5 +1,6 @@
 import { Response, NextFunction } from "express";
 import { verifyToken } from "@repo/auth/token";
+
 import { AuthRequest } from "../types";
 
 export function authMiddleware(
