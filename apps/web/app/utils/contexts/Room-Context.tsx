@@ -15,6 +15,7 @@ export const RoomContextProivider = ({
   const url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const JoinRoom = async (roomId: string) => {
+    console.log("🚀 ~ JoinRoom ~ roomId:", roomId);
     try {
       const res = await fetch(`${url}/joinroom`, {
         method: "POST",

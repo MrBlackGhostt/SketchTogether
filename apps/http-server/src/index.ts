@@ -20,7 +20,7 @@ async function verifyPassword(inputPassword: string, hashPassword: string) {
 
 const corsOptions = {
   origin: "http://localhost:3000",
-  credentials: true, //access-control-allow-credentials:true
+  credentials: true,
   optionSuccessStatus: 200,
 };
 
@@ -48,8 +48,6 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.post("/signin", async (req: AuthRequest, res: Response) => {
   const { email, password } = req.body;
-  console.log("🚀 ~ app.post ~ email:", email);
-  console.log("🚀 ~ app.post ~ password:", password);
 
   try {
     const user = await client.user.findFirst({
@@ -73,9 +71,9 @@ app.post("/signin", async (req: AuthRequest, res: Response) => {
     const token = generateToken(user.id);
 
     res.cookie("token", token, {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "lax",
     });
 
     res.status(200).send({

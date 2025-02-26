@@ -15,13 +15,15 @@ const CreateRoom = () => {
   };
   return (
     <div className="w-10">
-      <form onSubmit={handleCreateRoom}>
+      <form onSubmit={handleCreateRoom} className="room-input-form">
         <Input
           type="text"
           setFun={setEnterRoomName}
           placeholder="Enter the room name"
         />
-        <button type="submit">CreateRoom </button>
+        <button type="submit" className="room-btn">
+          CreateRoom{" "}
+        </button>
       </form>
     </div>
   );

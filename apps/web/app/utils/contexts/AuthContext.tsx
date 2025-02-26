@@ -49,6 +49,7 @@ export const AuthContextProvider = ({
         body: JSON.stringify(data),
         credentials: "include",
       });
+      console.log("🚀 ~ res headers:", res.headers);
 
       const dataGet = await res.json();
       console.log("🚀 ~ SignIn ~ dataGet:", dataGet);

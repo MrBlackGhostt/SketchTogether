@@ -15,14 +15,17 @@ const Join = () => {
     }
   };
   return (
-    <div className="w-10">
-      <form onSubmit={handleJoinRoom}>
+    <div className="room-input-div">
+      <form onSubmit={handleJoinRoom} className="room-input-form">
         <input
+          className="room-input"
           type="text"
           onChange={(e) => setEnterRoomName(e.target.value)}
           placeholder="Enter the room name"
         />
-        <button type="submit">Join room</button>
+        <button type="submit" className="room-btn">
+          Join room
+        </button>
       </form>
     </div>
   );

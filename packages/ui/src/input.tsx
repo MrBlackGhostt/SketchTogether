@@ -11,6 +11,7 @@ const Input = ({
 }) => {
   return (
     <input
+      className="room-input"
       type={type}
       placeholder={placeholder}
       onChange={(e) => setFun(e.target.value)}

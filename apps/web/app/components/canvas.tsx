@@ -9,8 +9,6 @@ import {
   handleWheel,
 } from "../utils/canvasFun";
 
-import CreateRoom from "./createRoom";
-
 import Signin from "./signin";
 import { useSelectItem } from "../utils/contexts/ItemSelectContext";
 import { useRoom } from "../utils/contexts/Room-Context";
@@ -32,7 +30,7 @@ const InfiniteCanvas = () => {
 
   const [userId, setUserId] = useState<string>("");
 
-  const { itemSelect, setItemSelect } = useSelectItem();
+  const { itemSelect } = useSelectItem();
 
   const { roomId } = useRoom();
 
@@ -187,9 +185,9 @@ const InfiniteCanvas = () => {
           Zoom: {(scale * 100).toFixed(0)}%
         </div>
         {/* <Toolbar setItemSelect={setItemSelect} /> */}
-        <div style={{ position: "absolute", top: 0, right: 0 }}>
+        {/* <div style={{ position: "absolute", top: 0, right: 0 }}>
           <Signin setUserId={setUserId} />
-        </div>
+        </div>/ */}
       </div>
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
         <canvas

@@ -45,10 +45,10 @@ const UserMenu = () => {
                 <UserIcon width="16" height="16" /> Profile
               </div>
               <div className="menu-item">
-                <Join /> Room
+                <Join />
               </div>
               <div className="menu-item">
-                <CreateRoom /> Room
+                <CreateRoom />
               </div>
 
               <div className="menu-item logout" onClick={handleSignOut}>

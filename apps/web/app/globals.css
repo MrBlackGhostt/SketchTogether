@@ -99,23 +99,29 @@ svg {
 }
 .dropdown-menu {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10;
   top: 45px;
   right: 0;
-  width: 150px;
-  background: rgba(36, 3, 249, 0.1);
+  width: fit-content;
+  background: rgba(36, 3, 249, 0.3);
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: hidden;
 }
 .menu-item {
-  padding: 10px;
+  padding: 0 10px;
   display: flex;
+  width: full;
+
   align-items: center;
   gap: 8px;
   cursor: pointer;
 }
 .menu-item:hover {
-  background: rgb(72, 78, 241);
+  background: rgba(36, 3, 249, 0.5);
+  border-radius: 5px;
 }
 .logout {
   color: red;
@@ -131,4 +137,31 @@ svg {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.room-input-div {
+  width: full;
+  display: flex;
+  flex-direction: column;
+  background: "blue";
+}
+.room-input-form {
+  width: 100%;
+
+  background: "blue";
+  display: flex;
+  flex-direction: row;
+  gap: 7;
+}
+
+.room-input {
+  height: 1.9rem;
+  padding: 3;
+
+  border-radius: 2px;
+  border: none;
+}
+
+.room-btn {
+  padding: 1 2;
 }
