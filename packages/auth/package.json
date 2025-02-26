@@ -7,7 +7,7 @@
     "build": "tsc -b"
   },
   "exports": {
-    "./token": "./dist/token.js"
+    "./token": "./src/token.ts"
   },
   "keywords": [],
   "author": "",

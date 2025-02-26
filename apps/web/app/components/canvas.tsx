@@ -12,6 +12,7 @@ import {
 import Signin from "./signin";
 import { useSelectItem } from "../utils/contexts/ItemSelectContext";
 import { useRoom } from "../utils/contexts/Room-Context";
+import { WS_URL } from "../../config";
 
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -45,7 +46,9 @@ const InfiniteCanvas = () => {
   };
 
   const [items, setItems] = useState<Item[]>([]);
-  const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
+
+  const url = WS_URL;
+
   useEffect(() => {
     if (roomId) {
       const ws = new WebSocket(`${url}?roomId=${roomId}&userId=${userId}`!);
