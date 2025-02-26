@@ -14,6 +14,7 @@ export const ItemsSelectProvider = ({
   const [currentItem, setCurrentItem] = useState<
     "pointer" | "rectangle" | "circle" | null
   >("pointer");
+  const [pickColor, setPickColor] = useState<string | null>("blue");
 
   const newItemSelect = (item: "pointer" | "rectangle" | "circle" | null) => {
     setCurrentItem(item);
@@ -21,7 +22,12 @@ export const ItemsSelectProvider = ({
 
   return (
     <ItemSelectContext.Provider
-      value={{ itemSelect: currentItem, setItemSelect: newItemSelect }}
+      value={{
+        itemSelect: currentItem,
+        setItemSelect: newItemSelect,
+        pickColor,
+        setPickColor,
+      }}
     >
       {children}
     </ItemSelectContext.Provider>

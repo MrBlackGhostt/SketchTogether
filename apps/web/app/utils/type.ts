@@ -6,6 +6,8 @@ export interface iconsProps {
 export interface ItemSelectContextProps {
   itemSelect: "rectangle" | "circle" | "pointer" | null;
   setItemSelect: (item: "rectangle" | "circle" | "pointer" | null) => void;
+  pickColor: string | null;
+  setPickColor: (item: string) => void;
 }
 
 export interface SignUpProps {

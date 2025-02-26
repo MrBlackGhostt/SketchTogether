@@ -4,6 +4,7 @@ type Item = {
   type: "rectangle" | "circle";
   x: number;
   y: number;
+  color?: string | null;
   width?: number;
   height?: number;
   radius?: number;
@@ -59,7 +60,8 @@ export const handleMouseMove = (
   setCurrentHeight: Dispatch<SetStateAction<number>>,
   setCurrentWidth: Dispatch<SetStateAction<number>>,
   setCurrentRadius: Dispatch<SetStateAction<number>>,
-  scale: number
+  scale: number,
+  pickColor: string | null
 ) => {
   if (!isDrawing) return;
   const currentX = (event.clientX - translateX) / scale;
@@ -75,6 +77,7 @@ export const handleMouseMove = (
       y: Math.min(startY, currentY),
       width: Math.abs(currentX - startX),
       height: Math.abs(currentY - startY),
+      color: pickColor,
     });
   } else if (selectItem == "circle") {
     const radius = Math.sqrt(
@@ -87,6 +90,7 @@ export const handleMouseMove = (
       x: startX,
       y: startY,
       radius: Math.abs(radius),
+      color: pickColor,
     });
   }
 };
@@ -103,7 +107,8 @@ export const handleMouseUp = (
   setIsDrawing: Dispatch<SetStateAction<boolean>>,
   setTempRect: Dispatch<SetStateAction<Item | null>>,
   tempRect: Item | null,
-  setLatestItem: Dispatch<SetStateAction<Item | null>>
+  setLatestItem: Dispatch<SetStateAction<Item | null>>,
+  pickColor: string | null
 ) => {
   setItems((prev) => [
     ...prev,
@@ -114,12 +119,14 @@ export const handleMouseUp = (
           y: Math.min(startY, currentHeight),
           width: Math.abs(currentWidth - startX),
           height: Math.abs(currentHeight - startY),
+          color: pickColor,
         }
       : {
           type: "circle",
           x: startX,
           y: startY,
           radius: Math.abs(currentRadius),
+          color: pickColor,
         },
   ]);
   setLatestItem(tempRect);

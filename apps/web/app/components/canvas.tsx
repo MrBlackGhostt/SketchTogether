@@ -31,7 +31,7 @@ const InfiniteCanvas = () => {
 
   const [userId, setUserId] = useState<string>("");
 
-  const { itemSelect } = useSelectItem();
+  const { itemSelect, pickColor } = useSelectItem();
 
   const { roomId } = useRoom();
 
@@ -39,12 +39,14 @@ const InfiniteCanvas = () => {
     type: "rectangle" | "circle";
     x: number;
     y: number;
+    color?: string | null;
     width?: number;
     height?: number;
     radius?: number;
   };
 
   const [items, setItems] = useState<Item[]>([]);
+
   const url = WS_URL;
 
   useEffect(() => {
@@ -117,7 +119,7 @@ const InfiniteCanvas = () => {
       // Draw added items
       items.forEach((item) => {
         if (item.type && item.type === "rectangle") {
-          ctx.strokeStyle = "blue";
+          ctx.strokeStyle = item.color ? item.color : "blue";
           ctx.strokeRect(
             item.x,
             item.y,
@@ -126,6 +128,7 @@ const InfiniteCanvas = () => {
           );
         } else if (item.type === "circle") {
           ctx.beginPath();
+          ctx.strokeStyle = item.color ? item.color : "blue";
           ctx.arc(item.x, item.y, item.radius!, 0, 2 * Math.PI);
           ctx.stroke();
         }
@@ -133,7 +136,8 @@ const InfiniteCanvas = () => {
 
       if (tempRect) {
         // ws.send(data);
-        ctx.strokeStyle = "red";
+
+        ctx.strokeStyle = pickColor || "blue";
         if (itemSelect == "rectangle") {
           ctx.strokeRect(
             tempRect.x,
@@ -142,7 +146,7 @@ const InfiniteCanvas = () => {
             tempRect.height!
           );
         } else if (tempRect.type == "circle") {
-          ctx.strokeStyle = "red";
+          ctx.strokeStyle = pickColor || "blue";
           ctx.beginPath();
           ctx.arc(tempRect.x, tempRect.y, tempRect.radius!, 0, 2 * Math.PI);
           ctx.stroke();
@@ -229,7 +233,8 @@ const InfiniteCanvas = () => {
               setCurrentHeight,
               setCurrentWidth,
               setCurrentRadius,
-              scale
+              scale,
+              pickColor
             )
           }
           onMouseUp={() =>
@@ -238,14 +243,14 @@ const InfiniteCanvas = () => {
               itemSelect,
               startX,
               startY,
-
               currentHeight,
               currentWidth,
               currentRadius,
               setIsDrawing,
               setTempRect,
               tempRect,
-              setLatestItem
+              setLatestItem,
+              pickColor
             )
           }
           onMouseLeave={() => handleMouseLeave(setIsDrawing)}

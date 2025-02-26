@@ -14,12 +14,13 @@
     "@repo/ui": "workspace:*",
     "next": "^15.1.6",
     "react": "^19.0.0",
+    "react-color-palette": "^7.3.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@repo/auth": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/auth": "workspace:*",
     "@types/node": "^22",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
