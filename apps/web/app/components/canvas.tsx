@@ -13,7 +13,8 @@ import Signin from "./signin";
 import { useSelectItem } from "../utils/contexts/ItemSelectContext";
 import { useRoom } from "../utils/contexts/Room-Context";
 import { WS_URL } from "../../config";
-
+import { useAuth } from "../utils/contexts/AuthContext";
+import { client } from "@repo/db/client";
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [scale, setScale] = useState(1);
@@ -29,12 +30,12 @@ const InfiniteCanvas = () => {
 
   const [latestItem, setLatestItem] = useState<Item | null>(null);
 
-  const [userId, setUserId] = useState<string>("");
-
   const { itemSelect, pickColor } = useSelectItem();
 
-  const { roomId } = useRoom();
+  const { roomId, element } = useRoom();
 
+  const { userData } = useAuth();
+  const userId = userData.userId;
   type Item = {
     type: "rectangle" | "circle";
     x: number;
@@ -55,8 +56,13 @@ const InfiniteCanvas = () => {
       // connectToWebSocket(roomId, userId, tempRect);
       ws.onopen = () => {
         console.log("connection successfuill");
+        if (element && element.length > 0) {
+          console.log("🚀 ~ InfiniteCanvas ~ element:", element);
+          setItems(element);
+        }
         if (latestItem) {
           const data = JSON.stringify(latestItem);
+          console.log("🚀 ~ useEffect ~ data:", data);
 
           ws.send(data);
         }
@@ -70,10 +76,11 @@ const InfiniteCanvas = () => {
 
             return newItem;
           });
+          console.log(receiveItem);
         }
       };
     }
-  }, [latestItem]);
+  }, [latestItem, element]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;

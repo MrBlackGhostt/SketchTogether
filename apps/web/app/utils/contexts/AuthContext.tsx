@@ -11,9 +11,10 @@ export const AuthContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState({ username: "" });
+  const [userData, setUserData] = useState({ username: "", userId: "" });
   const [accountCreated, setCreateAccount] = useState(false);
   const [error, setError] = useState<string | null>("");
+
   const url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const SignUp = async ({ username, email, password }: SignUpProps) => {
@@ -55,7 +56,7 @@ export const AuthContextProvider = ({
       console.log("🚀 ~ SignIn ~ dataGet:", dataGet);
       if (dataGet) {
         setIsAuthenticated(true);
-        setUserData({ username: dataGet.username });
+        setUserData({ username: dataGet.username, userId: dataGet.userId });
         setError(null);
       }
     } catch (error) {
@@ -63,11 +64,11 @@ export const AuthContextProvider = ({
       setError("Error in SignIn");
     }
   };
-
+  console.log(userData);
   const SignOut = () => {
     console.log("Signout");
     setIsAuthenticated(false);
-    setUserData({ username: "null" });
+    setUserData({ username: "null", userId: "null" });
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState } from "react";
-import { RoomContextProps } from "../type";
+import { Item, RoomContextProps } from "../type";
 
 const RoomContext = createContext<RoomContextProps | null>(null);
 
@@ -11,6 +11,7 @@ export const RoomContextProivider = ({
 }) => {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [element, setElement] = useState<Item[]>([]);
 
   const url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -26,11 +27,14 @@ export const RoomContextProivider = ({
         credentials: "include",
       });
       const data = await res.json();
+      console.log(data);
       if (data) {
         setRoomId(data.roomId);
+        setElement(data.oldElement);
         setError(null);
-        return;
+        return true;
       }
+
       setError("RData does not containt the room id");
     } catch (error) {
       console.log("Error in req", error);
@@ -38,7 +42,7 @@ export const RoomContextProivider = ({
       return null;
     }
   };
-
+  console.log(`Element ${element}`);
   const CreateRoom = async (roomName: string) => {
     try {
       const res = await fetch(`${url}/createroom`, {
@@ -72,6 +76,7 @@ export const RoomContextProivider = ({
         setRoomId,
         JoinRoom,
         CreateRoom,
+        element,
         error,
       }}
     >

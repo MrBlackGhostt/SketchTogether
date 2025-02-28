@@ -4,11 +4,12 @@ import { error } from "console";
 
 const Join = () => {
   const [EnterroomName, setEnterRoomName] = useState<string>("");
-  const { JoinRoom, error } = useRoom();
-
+  const { JoinRoom, error, element } = useRoom();
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
     await JoinRoom(EnterroomName);
+    console.log(element);
+
     if (error) {
       console.log("ERROR", error);
       throw new Error(error);

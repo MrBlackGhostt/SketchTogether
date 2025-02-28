@@ -8,10 +8,15 @@ const wss = new WebSocketServer({ port: 8080 });
 const rooms = new Map<string, Set<WebSocket>>();
 
 wss.on("connection", function connection(ws, req) {
-  const url = new URL(req.url || "", "http://localhost");
-  const roomId = url.searchParams.get("roomId");
-  const userId = url.searchParams.get("userId");
+  const url = req.url;
+  if (!url) return;
+  const queryParams = new URLSearchParams(url.split("?")[1]);
 
+  const roomId = queryParams.get("roomId");
+  const userId = queryParams.get("userId");
+
+  console.log(roomId);
+  console.log(userId);
   if (!userId) {
     console.log("❌ Invalid token, closing connection");
     ws.close();
