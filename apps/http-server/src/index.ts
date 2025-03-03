@@ -140,10 +140,18 @@ app.post(
           userId,
         },
       });
+
+      const oldElement = await client.element.findMany({
+        where: {
+          roomId: room.id,
+        },
+      });
+      console.log("🚀 ~ oldElement:", oldElement);
       if (checkUser) {
         res.status(200).json({
           message: "Join the room Successfull",
           roomId: room.id,
+          oldElement: oldElement,
         });
       } else {
         await client.roomUser.create({
@@ -152,9 +160,11 @@ app.post(
             userId: userId!,
           },
         });
+
         res.status(200).json({
           message: "Join the room Successfull",
           roomId: room.id,
+          oldElement: oldElement,
         });
       }
     } catch (error) {
@@ -165,7 +175,30 @@ app.post(
     }
   }
 );
+app.get(
+  "/chats/:roomId",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    const { roomId } = req.params;
 
+    try {
+      const chats = await client.element.findMany({
+        where: {
+          roomId: roomId,
+        },
+      });
+      console.log(chats);
+      res.status(200).json({
+        chats: chats,
+      });
+    } catch (error) {
+      console.error("Error in fetching chats:", error);
+      res.json({
+        error: "Error in fetching the room chats",
+      });
+    }
+  }
+);
 app.listen(3001, () => {
   console.log("Listining at port 3001");
 });

@@ -3,6 +3,16 @@ export interface iconsProps {
   height: string;
 }
 
+export interface Item {
+  type: "rectangle" | "circle";
+  x: number;
+  y: number;
+  color?: string | null;
+  width?: number;
+  height?: number;
+  radius?: number;
+}
+
 export interface ItemSelectContextProps {
   itemSelect: "rectangle" | "circle" | "pointer" | null;
   setItemSelect: (item: "rectangle" | "circle" | "pointer" | null) => void;
@@ -22,7 +32,7 @@ export interface SignInProps {
 
 export interface AuthContextProps {
   isAuthenticated: boolean;
-  userData: { username: string };
+  userData: { username: string; userId: string };
   error: string | null;
   accountCreated: boolean;
   SignUp: (item: SignUpProps) => void;
@@ -35,5 +45,6 @@ export interface RoomContextProps {
   setRoomId: (item: string) => void;
   JoinRoom: (i: string) => void;
   CreateRoom: (i: string) => void;
+  element: Item[];
   error: string | null;
 }

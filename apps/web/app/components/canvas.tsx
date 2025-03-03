@@ -13,7 +13,8 @@ import Signin from "./signin";
 import { useSelectItem } from "../utils/contexts/ItemSelectContext";
 import { useRoom } from "../utils/contexts/Room-Context";
 import { WS_URL } from "../../config";
-
+import { useAuth } from "../utils/contexts/AuthContext";
+import { client } from "@repo/db/client";
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [scale, setScale] = useState(1);
@@ -29,12 +30,12 @@ const InfiniteCanvas = () => {
 
   const [latestItem, setLatestItem] = useState<Item | null>(null);
 
-  const [userId, setUserId] = useState<string>("");
-
   const { itemSelect, pickColor } = useSelectItem();
 
-  const { roomId } = useRoom();
+  const { roomId, element } = useRoom();
 
+  const { userData } = useAuth();
+  const userId = userData.userId;
   type Item = {
     type: "rectangle" | "circle";
     x: number;
@@ -55,8 +56,13 @@ const InfiniteCanvas = () => {
       // connectToWebSocket(roomId, userId, tempRect);
       ws.onopen = () => {
         console.log("connection successfuill");
+        if (element && element.length > 0) {
+          console.log("🚀 ~ InfiniteCanvas ~ element:", element);
+          setItems(element);
+        }
         if (latestItem) {
           const data = JSON.stringify(latestItem);
+          console.log("🚀 ~ useEffect ~ data:", data);
 
           ws.send(data);
         }
@@ -65,15 +71,19 @@ const InfiniteCanvas = () => {
         const dataReceived = JSON.parse(event.data);
         if (dataReceived) {
           const receiveItem = JSON.parse(dataReceived.message);
-          setItems((prev) => {
-            const newItem = [...prev, receiveItem];
 
-            return newItem;
-          });
+          if (latestItem) {
+            setItems((prev) => {
+              const newItem = [...prev, latestItem];
+
+              console.log("New Item", newItem);
+              return newItem;
+            });
+          }
         }
       };
     }
-  }, [latestItem]);
+  }, [latestItem, roomId, url, userId, element]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
@@ -117,6 +127,7 @@ const InfiniteCanvas = () => {
       }
 
       // Draw added items
+      console.log("Items", items);
       items.forEach((item) => {
         if (item.type && item.type === "rectangle") {
           ctx.strokeStyle = item.color ? item.color : "blue";
@@ -155,9 +166,7 @@ const InfiniteCanvas = () => {
 
       ctx.restore();
     };
-
     draw();
-
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -176,12 +185,11 @@ const InfiniteCanvas = () => {
     currentHeight,
     currentWidth,
     currentRadius,
+    tempRect,
+    itemSelect,
+    pickColor,
     items,
   ]);
-
-  useEffect(() => {
-    console.log("Updated Items:", items);
-  }, [items]);
 
   return (
     <div>
