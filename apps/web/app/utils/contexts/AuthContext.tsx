@@ -1,7 +1,8 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { AuthContextProps, SignInProps, SignUpProps } from "../type";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext<AuthContextProps | null>(null);
 
@@ -11,11 +12,20 @@ export const AuthContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState({ username: "" });
+  const [userData, setUserData] = useState({ username: "", userId: "" });
   const [accountCreated, setCreateAccount] = useState(false);
   const [error, setError] = useState<string | null>("");
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+  useEffect(() => {
+    const username = Cookies.get("username");
+    const userId = Cookies.get("userId");
+    if (!username && !userId) return;
+    if (username) {
+      setIsAuthenticated(true);
+      setUserData({ username: username, userId: userId as string });
+    }
+  }, []);
   const SignUp = async ({ username, email, password }: SignUpProps) => {
     const data = { username, email, password };
     try {
@@ -50,12 +60,13 @@ export const AuthContextProvider = ({
         credentials: "include",
       });
       console.log("🚀 ~ res headers:", res.headers);
-
       const dataGet = await res.json();
       console.log("🚀 ~ SignIn ~ dataGet:", dataGet);
       if (dataGet) {
+        Cookies.set("username", dataGet.username, { secure: true }); // ✅ Set Cookie in Client
+        Cookies.set("userId", dataGet.userId, { secure: true });
         setIsAuthenticated(true);
-        setUserData({ username: dataGet.username });
+        setUserData({ username: dataGet.username, userId: dataGet.userId });
         setError(null);
       }
     } catch (error) {
@@ -63,11 +74,15 @@ export const AuthContextProvider = ({
       setError("Error in SignIn");
     }
   };
-
+  console.log(userData);
   const SignOut = () => {
     console.log("Signout");
     setIsAuthenticated(false);
-    setUserData({ username: "null" });
+    setUserData({ username: "null", userId: "null" });
+
+    //Deleting the cookies
+    Cookies.remove("username");
+    Cookies.remove("userId");
   };
 
   return (

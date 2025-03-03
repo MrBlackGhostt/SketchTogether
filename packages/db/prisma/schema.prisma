@@ -60,6 +60,7 @@ width Float?
 height Float?
 roomId String
 color String? 
+radius Float?
 //   strokeWidth Float? 
 //   rotation Float?
 room Room @relation(fields: [roomId], references: [id])
