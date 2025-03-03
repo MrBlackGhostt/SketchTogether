@@ -48,6 +48,7 @@ wss.on("connection", function connection(ws, req) {
           y: elementData.y,
           width: elementData?.width,
           height: elementData?.height,
+          radius: elementData?.radius,
           roomId: roomId,
           // radius: elementData?.radius,
         },

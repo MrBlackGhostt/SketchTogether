@@ -32,7 +32,7 @@ const Signin = ({
     console.log("🚀 ~ handleSignin ~ da̵ta:", da̵ta);
     const userId = da̵ta.userId;
     setUserId(userId);
-    document.cookie = `token=${da̵ta.token}; path=/; secure; samesite=strict`;
+    // document.cookie = `token=${da̵ta.token}; path=/; secure; samesite=strict`;
     console.log("🚀 ~ handleSignin ~ da̵ta:", da̵ta);
     return da̵ta;
   };

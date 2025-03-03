@@ -71,16 +71,19 @@ const InfiniteCanvas = () => {
         const dataReceived = JSON.parse(event.data);
         if (dataReceived) {
           const receiveItem = JSON.parse(dataReceived.message);
-          setItems((prev) => {
-            const newItem = [...prev, receiveItem];
 
-            return newItem;
-          });
-          console.log(receiveItem);
+          if (latestItem) {
+            setItems((prev) => {
+              const newItem = [...prev, latestItem];
+
+              console.log("New Item", newItem);
+              return newItem;
+            });
+          }
         }
       };
     }
-  }, [latestItem, element]);
+  }, [latestItem, roomId, url, userId, element]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
@@ -124,6 +127,7 @@ const InfiniteCanvas = () => {
       }
 
       // Draw added items
+      console.log("Items", items);
       items.forEach((item) => {
         if (item.type && item.type === "rectangle") {
           ctx.strokeStyle = item.color ? item.color : "blue";
@@ -162,9 +166,7 @@ const InfiniteCanvas = () => {
 
       ctx.restore();
     };
-
     draw();
-
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -183,12 +185,11 @@ const InfiniteCanvas = () => {
     currentHeight,
     currentWidth,
     currentRadius,
+    tempRect,
+    itemSelect,
+    pickColor,
     items,
   ]);
-
-  useEffect(() => {
-    console.log("Updated Items:", items);
-  }, [items]);
 
   return (
     <div>
