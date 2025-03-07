@@ -14,7 +14,7 @@ import { useSelectItem } from "../utils/contexts/ItemSelectContext";
 import { useRoom } from "../utils/contexts/Room-Context";
 import { WS_URL } from "../../config";
 import { useAuth } from "../utils/contexts/AuthContext";
-import { client } from "@repo/db/client";
+
 const InfiniteCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [scale, setScale] = useState(1);
@@ -57,13 +57,10 @@ const InfiniteCanvas = () => {
       ws.onopen = () => {
         console.log("connection successfuill");
         if (element && element.length > 0) {
-          console.log("🚀 ~ InfiniteCanvas ~ element:", element);
           setItems(element);
         }
         if (latestItem) {
           const data = JSON.stringify(latestItem);
-          console.log("🚀 ~ useEffect ~ data:", data);
-
           ws.send(data);
         }
       };
@@ -74,9 +71,8 @@ const InfiniteCanvas = () => {
 
           if (latestItem) {
             setItems((prev) => {
-              const newItem = [...prev, latestItem];
+              const newItem = [...prev, receiveItem];
 
-              console.log("New Item", newItem);
               return newItem;
             });
           }
