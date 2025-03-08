@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 
-export function generateToken(id) {
+export function generateToken(id: string) {
   return jwt.sign({ id }, process.env.SECRET_KEY || "adbajbdnajbdjadjnb", {
     noTimestamp: true,
   });
 }
 
-export function verifyToken(token) {
+export function verifyToken(token: string) {
   const decoded = jwt.verify(
     token,
     process.env.SECRET_KEY || "adbajbdnajbdjadjnb"
